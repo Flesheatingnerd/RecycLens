@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>Result — Plastic Classifier</title>
+        <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <main class="result-page">
+        <div class="container">
+            <div class="panel result-panel">
+                <h1>Classification Result</h1>
+
+                {% if error %}
+                    <div class="alert error">{{ error }}</div>
+                    <a class="btn secondary" href="/">Try Again</a>
+                {% else %}
+                    {% if image_url %}
+                        <div class="result-image">
+                            <img src="{{ image_url }}" alt="Uploaded image">
+                        </div>
+                    {% endif %}
+
+                    <div class="result-text">
+                        <p class="label">Predicted Class</p>
+                        <h2 class="prediction">{{ prediction }}</h2>
+                    </div>
+
+                    <div class="actions">
+                        <a class="btn" href="/">Classify Another</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+</body>
+</html>

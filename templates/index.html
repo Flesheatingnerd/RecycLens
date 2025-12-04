@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css" />
+    <title>Plastic Classifier</title>
+</head>
+<body>
+    <div class="background-circles">
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+        <div class="circle circle-3"></div>
+        <div class="circle circle-4"></div>
+        <div class="circle circle-5"></div>
+        <div class="circle circle-6"></div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1 class="title">Plastic Classifier</h1>
+            <p class="subtitle">
+                Drop an image below or scan your image. Our model will identify the type of plastic.
+            </p>
+        </div>
+
+        <div class="content">
+            <form id="uploadForm" class="upload-form" method="POST" action="/predict" enctype="multipart/form-data">
+                <div class="buttons-section">
+                    <button type="button" class="btn-scan">Scan using camera</button>
+                    
+                    <div id="dropzone" class="btn-drop">
+                        <span class="dropzone-text">Drop an image here</span>
+                        
+                        <div id="preview" class="image-preview" aria-hidden="true"></div>
+                        
+                        <input type="file" id="fileInput" name="file" accept="image/png, image/jpeg, image/jpg" required style="display: none;" />
+                    </div>
+                </div>
+                <div id="cameraInterface" class="camera-interface" style="display: none;">
+                    <video id="cameraFeed" autoplay playsinline></video>
+                    <button type="button" id="snapBtn" class="btn primary">Take Photo</button>
+                </div>
+
+                <br>
+                    <div class="form-actions">
+                        <button type="submit" id="submitBtn" class="btn primary">
+                        <span class="spinner"></span> 
+                        <span class="button-text">Classify Plastic</span>
+                        </button>
+                    </div>
+            </form>
+
+            <div id="resultsPanel" class="results-panel" style="display: none;">
+                <p class="label">Predicted Class</p>
+                <h2 id="predictionText" class="prediction"></h2>
+                <a id="resetBtn" class="btn secondary" href="#">Classify Another</a>
+            </div>
+
+            <div class="about-section">
+    <h3 class="about-title">About the Model</h3>
+    <p class="about-text">
+        This model is trained to classify common types of recyclable plastics based on their visual appearance. Knowing the specific plastic type is crucial for proper recycling and disposal. Below is a quick guide to the plastics we classify:
+    </p>
+
+                <div class="plastic-guide">
+                    <table class="plastic-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Recycling #</th>
+                                <th>Common Uses</th>
+                                <th>Recyclability</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>**PET**</td>
+                                <td><span class="recycle-number num-1">1</span></td>
+                                <td>Beverage bottles, peanut butter jars, salad dressing bottles.</td>
+                                <td class="recyclable">Highly Recyclable</td>
+                            </tr>
+                            <tr>
+                                <td>**HDPE**</td>
+                                <td><span class="recycle-number num-2">2</span></td>
+                                <td>Milk jugs, detergent bottles, shampoo bottles, rigid containers.</td>
+                                <td class="recyclable">Highly Recyclable</td>
+                            </tr>
+                            <tr>
+                                <td>**LDPE**</td>
+                                <td><span class="recycle-number num-4">4</span></td>
+                                <td>Plastic bags, shrink wrap, squeezable bottles, flexible lids.</td>
+                                <td class="varies">Varies by facility</td>
+                            </tr>
+                            <tr>
+                                <td>**PP**</td>
+                                <td><span class="recycle-number num-5">5</span></td>
+                                <td>Yogurt containers, medicine bottles, ketchup bottles, bottle caps.</td>
+                                <td class="recyclable">Good Recyclability</td>
+                            </tr>
+                            <tr>
+                                <td>**PS**</td>
+                                <td><span class="recycle-number num-6">6</span></td>
+                                <td>Disposable cups, foam packaging (Styrofoam), CD cases.</td>
+                                <td class="rarely-recycled">Rarely Recycled</td>
+                            </tr>
+                            <tr>
+                                <td>**Other**</td>
+                                <td><span class="recycle-number num-7">7</span></td>
+                                <td>Mixed plastics, bioplastics, and multilayered materials.</td>
+                                <td class="not-recycled">Not Recycled</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        Plastic Classifier 2025 All Rights Reserved
+    </footer>
+    <script src="/static/upload.js"></script>
+    <script src="/static/camera.js"></script>
+</body>
+</html>

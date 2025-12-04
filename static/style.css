@@ -1,0 +1,577 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    /* ------------------------------------------------------------------ */
+    /* *** CRITICAL BACKGROUND FIX: Ensure the body is at least the height of the viewport. */
+    min-height: 100vh; 
+    height: auto; /* Allow the body to stretch past 100vh if content overflows */
+    /* ------------------------------------------------------------------ */
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    /* This gradient is the consistent blue background */
+    background: linear-gradient(135deg, #87ceeb 0%, #4a9fd8 100%);
+    position: relative;
+}
+
+/* Decorative background circles */
+.background-circles {
+    /* Set to absolute so it scrolls with the content (if body height increases) */
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    top: 0;
+    left: 0;
+}
+
+.circle {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+}
+
+.circle-1 {
+    width: 80px;
+    height: 80px;
+    top: 60px;
+    left: 50px;
+}
+
+.circle-2 {
+    width: 120px;
+    height: 120px;
+    top: 140px;
+    left: 80px;
+}
+
+.circle-3 {
+    width: 50px;
+    height: 50px;
+    top: 250px;
+    left: 35px;
+}
+
+.circle-4 {
+    width: 90px;
+    height: 90px;
+    bottom: 180px;
+    right: 60px;
+}
+
+.circle-5 {
+    width: 60px;
+    height: 60px;
+    bottom: 100px;
+    right: 20px;
+}
+
+.circle-6 {
+    width: 110px;
+    height: 110px;
+    bottom: 100px;
+    right: 150px;
+}
+
+/* Main container */
+.container {
+    position: relative;
+    width: 100%;
+    /* Use min-height to ensure space is covered and content starts from the top */
+    min-height: calc(100vh - 50px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; 
+    padding: 100px 20px 80px; 
+    z-index: 1;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    margin-bottom: 80px;
+    margin-top: 0;
+}
+
+.title {
+    font-size: 2.8rem;
+    color: #1a4d7a;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    font-size: 0.9rem;
+    color: #1a4d7a;
+    max-width: 600px;
+}
+
+/* Content area */
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 70px;
+}
+
+/* Buttons section */
+.buttons-section {
+    display: flex;
+    gap: 35px;
+    justify-content: center;
+}
+
+/* --- Form and Dropzone Styles --- */
+
+.upload-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px; 
+}
+
+/* Redefine btn-scan (Scan button) */
+.btn-scan {
+    border: none;
+    border-radius: 12px;
+    padding: 120px 120px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background: white;
+    color: #1a4d7a;
+    border: 3px solid #1a4d7a;
+}
+
+/* Redefine btn-drop (Dropzone container) */
+.btn-drop {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    
+    background: #2f4d7a;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 30px; 
+    width: 300px;
+    height: 300px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-scan:hover, .btn-drop:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.btn-drop.dragover {
+    background-color: #4a6d97;
+    border: 3px dashed white;
+}
+
+.dropzone-text {
+    z-index: 2;
+    transition: opacity 0.2s;
+}
+
+/* Image Preview */
+.image-preview {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-preview[aria-hidden="true"] {
+    display: none;
+}
+
+.image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+}
+
+/* When preview is visible, hide the text */
+.image-preview[aria-hidden="false"] + .dropzone-text {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Submit Button and general button styling */
+.btn {
+    border: none;
+    border-radius: 8px;
+    padding: 12px 30px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    text-decoration: none;
+    text-align: center;
+}
+
+.btn.primary {
+    background: #1a4d7a;
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn.primary:hover {
+    background: #2a639a;
+    transform: translateY(-1px);
+}
+
+.btn.primary:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.btn.secondary {
+    background: white;
+    color: #1a4d7a;
+    border: 2px solid #1a4d7a;
+}
+
+/* About section */
+.about-section {
+    background: rgba(255, 255, 255, 0.7);
+    padding: 20px 35px;
+    border-radius: 10px;
+    max-width: 650px;
+    text-align: center;
+}
+
+.about-title {
+    font-size: 0.95rem;
+    color: #1a4d7a;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.about-text {
+    font-size: 0.85rem;
+    color: #333;
+    line-height: 1.5;
+}
+
+/* Footer (Now scrolls with content) */
+.footer {
+    /* REMOVED position: absolute; and bottom: 0; */
+    width: 100%;
+    padding: 12px;
+    text-align: center;
+    background: white;
+    color: #1a4d7a;
+    font-size: 0.9rem;
+    border-top: 1px solid #ccc;
+    z-index: 1;
+}
+
+/* --- Result Page Styles (For result.html) --- */
+
+.result-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.result-panel {
+    background: white;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+}
+
+.result-panel h1 {
+    color: #1a4d7a;
+    margin-bottom: 30px;
+}
+
+.result-image {
+    width: 100%;
+    height: 250px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #f0f0f0;
+}
+
+.result-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.result-text .label {
+    font-size: 0.85rem;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.result-text .prediction {
+    font-size: 2.5rem;
+    color: #2f4d7a;
+    font-weight: 700;
+    margin-bottom: 30px;
+}
+
+.alert.error {
+    background: #ffe6e6;
+    color: #cc0000;
+    border: 1px solid #cc0000;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-weight: 500;
+    text-align: left;
+}
+
+.results-panel {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 350px;
+    width: 100%;
+    /* Flex is needed because we set display:flex in upload.js */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.results-panel .prediction {
+    font-size: 2.2rem;
+    color: #2f4d7a;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.results-panel .label {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.spinner {
+    border: 3px solid rgba(255, 255, 255, 0.3); /* Light ring border */
+    border-top: 3px solid #fff; /* White rotating part */
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+    display: none; /* Hidden by default */
+    margin-right: 5px; /* Space between spinner and text */
+}
+
+/* CSS Keyframe Animation for the spinner */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Style for the button when it's in the loading state */
+.btn.primary.loading {
+    /* Ensure text and spinner are centered */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: default;
+    opacity: 0.9; /* Subtle visual change */
+}
+
+/* When the button is loading, show the spinner */
+.btn.primary.loading .spinner {
+    display: block;
+}
+
+/* When the button is loading, hide the button text */
+.btn.primary.loading .button-text {
+    /* If you want to keep the text, skip this block. 
+       If you want *only* the spinner, use this: */
+    display: none; 
+}
+
+/* --- Table Styles (Plastic Guide) --- */
+
+.plastic-guide {
+    margin-top: 20px;
+    /* Allows the table to scroll horizontally on small screens */
+    overflow-x: auto; 
+    width: 100%;
+    /* Max width consistent with about-section */
+    max-width: 650px; 
+}
+
+.plastic-table {
+    width: 100%;
+    border-collapse: collapse; /* Removes space between borders */
+    background: white;
+    border-radius: 8px;
+    overflow: hidden; /* Ensures border-radius applies to all corners */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    min-width: 500px; /* Minimum width for the table content */
+}
+
+.plastic-table thead tr {
+    background-color: #1a4d7a;
+    color: white;
+    font-weight: 600;
+}
+
+.plastic-table th, 
+.plastic-table td {
+    padding: 12px 15px;
+    text-align: left;
+    font-size: 0.8rem;
+    line-height: 1.4;
+}
+
+/* --- Table Styles (Plastic Guide) --- */
+
+.plastic-guide {
+    margin-top: 20px;
+    /* Allows the table to scroll horizontally on small screens */
+    overflow-x: auto; 
+    width: 100%;
+    /* Max width consistent with about-section */
+    max-width: 650px; 
+}
+
+.plastic-table {
+    width: 100%;
+    border-collapse: collapse; 
+    background: white;
+    border-radius: 8px;
+    overflow: hidden; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    min-width: 500px; 
+}
+
+.plastic-table thead tr {
+    background-color: #1a4d7a; /* Dark Blue Header */
+    color: white;
+    font-weight: 600;
+}
+
+.plastic-table th, 
+.plastic-table td {
+    padding: 12px 15px;
+    text-align: left;
+    font-size: 0.8rem;
+    line-height: 1.4;
+}
+
+.plastic-table tbody tr {
+    border-bottom: 1px solid #eee; 
+    transition: background-color 0.15s ease;
+}
+
+.plastic-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9; /* Zebra striping */
+}
+
+.plastic-table tbody tr:hover {
+    background-color: #e6f2ff; /* Hover effect */
+}
+
+/* Recycling Number Styling (Badges) */
+.recycle-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.num-1 { background-color: #008744; } 
+.num-2 { background-color: #0057e9; } 
+.num-4 { background-color: #f37b1d; } 
+.num-5 { background-color: #00b0ff; } 
+.num-6 { background-color: #c4302b; } 
+.num-7 { background-color: #555555; } 
+
+/* Recyclability Status Styling */
+.recyclable {
+    font-weight: 600;
+    color: #008000; /* Green */
+}
+
+.varies {
+    font-weight: 600;
+    color: #f37b1d; /* Orange */
+}
+
+.rarely-recycled {
+    font-weight: 600;
+    color: #ffc107; /* Yellow/Amber */
+}
+
+.not-recycled {
+    font-weight: 600;
+    color: #dc3545; /* Red */
+}
+
+/* --- Camera Interface Styles --- */
+
+.camera-interface {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 300px; /* Match the size of the dropzone for consistency */
+    background: #fff;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+#cameraFeed {
+    width: 100%;
+    height: 250px; /* Set a fixed height for the video */
+    background: #000;
+    border-radius: 8px;
+    object-fit: cover; /* Ensures the video fills the container */
+    transform: scaleX(-1); /* Flips the video horizontally (optional, but typical for user-facing cameras) */
+}
+
+/* Ensure the submit button (Classify Plastic) is below the camera interface */
+.upload-form {
+    /* If you haven't already, ensure this is a flexible layout */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px; 
+}
