@@ -112,8 +112,21 @@ def predict():
 
     return jsonify({"error": "Invalid file type"}), 400
 
+@app.route("/check-model")
+def check_model():
+    return {
+        "root_path": app.root_path,
+        "model_path": MODEL_PATH,
+        "exists": os.path.exists(MODEL_PATH),
+        "files_in_root": os.listdir(app.root_path)
+    }
+
+
+
+
 
 # --- Only run server locally ---
 if __name__ == "__main__":
     print("\n* Starting local Flask server...")
     app.run(host="0.0.0.0", port=5000, debug=True)
+
