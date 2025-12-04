@@ -17,7 +17,8 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 # --- Model Configuration ---
 MODEL_FILENAME = "plastic_classifier_model.keras"
-MODEL_PATH = os.path.join(app.root_path, MODEL_FILENAME)
+MODEL_PATH = os.path.join(app.root_path, "plastic_classifier_model.keras")
+
 model = None
 model_load_error = None
 
