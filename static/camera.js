@@ -34,9 +34,9 @@ async function startCamera() {
         await cameraFeed.play();
 
         // Update UI
-        cameraInterface.style.display = 'flex';
-        dropzone.style.display = 'none';
-        btnScan.style.display = 'none';
+        if (cameraInterface) cameraInterface.style.display = 'flex';
+        if (dropzone) dropzone.style.display = 'none';
+        if (btnScan) btnScan.style.display = 'none';
 
     } catch (error) {
         alert('Unable to access camera. Please check permissions.');
@@ -57,10 +57,10 @@ function stopCamera() {
     }
 
     // Reset UI state
-    cameraFeed.srcObject = null;
-    cameraInterface.style.display = 'none';
-    dropzone.style.display = 'flex';
-    btnScan.style.display = 'block';
+    if (cameraFeed) cameraFeed.srcObject = null;
+    if (cameraInterface) cameraInterface.style.display = 'none';
+    if (dropzone) dropzone.style.display = 'flex';
+    if (btnScan) btnScan.style.display = 'block';
 }
 
 /**
@@ -93,8 +93,9 @@ function capturePhoto() {
                 stopCamera(); 
                 
                 // CRITICAL: Pass the captured file to the main upload script's handler
+                // Pass 'true' to auto-classify immediately after processing
                 if (window.handleFile) {
-                    window.handleFile(capturedFile);
+                    window.handleFile(capturedFile, true); // CHANGED: Added 'true'
                 } else {
                     alert('Error: Classification logic not loaded. Cannot process image.');
                 }
