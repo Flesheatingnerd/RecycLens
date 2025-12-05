@@ -1,13 +1,12 @@
 /**
  * upload.js - Handles file upload, drag & drop, classification, and result display.
- * * Note: Based on your index.html, some IDs from the combined script 
- * (like uploadArea, classifyBtn, resultsSection, etc.) have been renamed 
- * to match your existing HTML structure (e.g., #dropzone, #submitBtn, #resultsPanel).
  */
 
 // --- Global Variables ---
-// Shared variable to hold the file selected from drag/drop, input, or camera
 let selectedFile = null;
+
+// --- DOM Elements (Defined globally for easy access) ---
+const submitBtn = document.getElementById('submitBtn');
 
 // --- Utility Functions ---
 
@@ -17,8 +16,10 @@ let selectedFile = null;
 function showLoading(button) {
     if (!button) return;
     button.disabled = true;
-    button.querySelector('.spinner').style.display = 'inline-block';
-    button.querySelector('.button-text').textContent = 'Classifying...';
+    const spinner = button.querySelector('.spinner');
+    const buttonText = button.querySelector('.button-text');
+    if (spinner) spinner.style.display = 'inline-block';
+    if (buttonText) buttonText.textContent = 'Classifying...';
 }
 
 /**
@@ -27,8 +28,10 @@ function showLoading(button) {
 function hideLoading(button) {
     if (!button) return;
     button.disabled = false;
-    button.querySelector('.spinner').style.display = 'none';
-    button.querySelector('.button-text').textContent = 'Classify Plastic';
+    const spinner = button.querySelector('.spinner');
+    const buttonText = button.querySelector('.button-text');
+    if (spinner) spinner.style.display = 'none';
+    if (buttonText) buttonText.textContent = 'Classify Plastic';
 }
 
 /**
@@ -42,16 +45,18 @@ function displayResults(data) {
     const preview = document.getElementById('preview');
 
     // Update UI elements
-    predictionText.textContent = data.prediction; // e.g., "HDPE"
+    if (predictionText) predictionText.textContent = data.prediction; // e.g., "HDPE"
     
     // Display the results panel
-    uploadForm.style.display = 'none';
-    resultsPanel.style.display = 'flex';
+    if (uploadForm) uploadForm.style.display = 'none';
+    if (resultsPanel) resultsPanel.style.display = 'flex';
 
     // Clear the visual preview
-    preview.style.backgroundImage = 'none';
-    preview.setAttribute('aria-hidden', 'true');
-    preview.classList.remove('active');
+    if (preview) {
+        preview.style.backgroundImage = 'none';
+        preview.setAttribute('aria-hidden', 'true');
+        preview.classList.remove('active');
+    }
 }
 
 // --- File Handling Functions ---
@@ -59,13 +64,13 @@ function displayResults(data) {
 /**
  * Processes a single selected file (from drag/drop, input, or camera).
  * @param {File} file - The image file to process.
+ * @param {boolean} [autoClassify=false] - If true, classification is called immediately.
  */
-function handleFile(file) {
+function handleFile(file, autoClassify = false) { 
     const dropzone = document.getElementById('dropzone');
     const preview = document.getElementById('preview');
-    const submitBtn = document.getElementById('submitBtn');
 
-    // Basic file validation (only accepts what the input accepts)
+    // Basic file validation
     const allowedExtensions = ["png", "jpg", "jpeg"];
     const fileExtension = file.name.split('.').pop().toLowerCase();
     
@@ -79,27 +84,38 @@ function handleFile(file) {
     // Show preview
     const reader = new FileReader();
     reader.onload = (e) => {
-        preview.style.backgroundImage = `url('${e.target.result}')`;
-        preview.classList.add('active');
-        preview.setAttribute('aria-hidden', 'false');
+        if (preview) {
+            preview.style.backgroundImage = `url('${e.target.result}')`;
+            preview.classList.add('active');
+            preview.setAttribute('aria-hidden', 'false');
+        }
 
-        // Update dropzone text (optional, but good feedback)
-        dropzone.querySelector('.dropzone-text').textContent = `File: ${file.name}`;
+        // 🟢 HIDE TEXT: Get the text span
+        const dropzoneText = dropzone ? dropzone.querySelector('.dropzone-text') : null;
+
+        if (dropzoneText) {
+            // Hide the default text
+            dropzoneText.style.display = 'none';
+        }
+
+        // Explicitly ensure the submit button is enabled
+        if (submitBtn) {
+            submitBtn.disabled = false;
+        }
+        
+        // Auto-classify if the flag is set (from camera)
+        if (autoClassify) {
+            classifyImage(null); 
+        }
     };
     reader.readAsDataURL(file);
-
-    // Enable the submit button
-    submitBtn.disabled = false;
 }
 
 /**
  * Handles the classification submission.
- * This is called by the form submit event listener in initEventListeners.
  */
 async function classifyImage(e) {
-    e.preventDefault();
-    const submitBtn = document.getElementById('submitBtn');
-    const dropzone = document.getElementById('dropzone');
+    if (e) e.preventDefault(); // Only prevent default if called by a form submit event
 
     if (!selectedFile) {
         alert('Please select an image first.');
@@ -107,13 +123,11 @@ async function classifyImage(e) {
     }
 
     const formData = new FormData();
-    // CRITICAL: The 'file' key must match the Flask route's expectation
     formData.append('file', selectedFile);
 
     try {
         showLoading(submitBtn);
 
-        // Fetch API is used to handle the form submission asynchronously
         const response = await fetch('/predict', {
             method: 'POST',
             body: formData,
@@ -124,12 +138,10 @@ async function classifyImage(e) {
         if (response.ok && data.success) {
             displayResults(data);
         } else {
-            // Handle server-side errors
             alert(`Classification Error: ${data.error || 'Unknown error'}`);
             console.error('Prediction failed:', data.error);
         }
     } catch (error) {
-        // Handle network or script errors
         alert('A network error occurred during classification. Check console.');
         console.error('Fetch error:', error);
     } finally {
@@ -151,19 +163,30 @@ function handleDragLeave(e) {
 
 function handleDrop(e) {
     e.preventDefault();
-    e.currentTarget.classList.remove('drag-over');
+    
+    // Ensure drag-over class is removed immediately
+    e.currentTarget.classList.remove('drag-over'); 
     
     const files = e.dataTransfer.files;
+    
     if (files.length > 0) {
-        // Pass the dropped file to the common handling function
+        // Pass the dropped file to the common handling function (NO auto-classify)
         handleFile(files[0]);
+        
+        // Scroll to the button to guide the user
+        const submitBtn = document.getElementById('submitBtn');
+        if (submitBtn) {
+            submitBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    } else {
+        alert('Drag & drop failed. Please click to select a file.');
     }
 }
 
 function handleFileInputChange(e) {
     const files = e.target.files;
     if (files.length > 0) {
-        // Pass the selected file to the common handling function
+        // Pass the selected file to the common handling function (NO auto-classify)
         handleFile(files[0]);
     }
 }
@@ -184,8 +207,8 @@ function initUpload() {
         
         // Click dropzone to trigger hidden file input
         dropzone.addEventListener('click', () => {
-             // Only trigger if a file isn't already selected and preview isn't active
-            if (!selectedFile) {
+             // Only trigger if a file isn't already selected
+            if (!selectedFile && fileInput) {
                 fileInput.click();
             }
         });
@@ -213,8 +236,8 @@ function initUpload() {
     window.handleFile = handleFile; 
     
     // Ensure the form is visible on load and results are hidden
-    if (uploadForm) uploadForm.style.display = 'block';
     const resultsPanel = document.getElementById('resultsPanel');
+    if (uploadForm) uploadForm.style.display = 'block';
     if (resultsPanel) resultsPanel.style.display = 'none';
 }
 
